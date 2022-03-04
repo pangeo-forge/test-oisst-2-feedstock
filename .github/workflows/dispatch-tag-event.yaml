@@ -1,0 +1,21 @@
+name: Dispatch Tag Event
+
+on:
+  push:
+    tags:        
+      - '*'
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    env:
+      FEEDSTOCK_SPEC: "${{ github.repository }}"
+      TAG: "${{ github.ref }}"
+    steps:
+      - name: dispatch tag event
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PANGEO_FORGE_BOT_TOKEN }}
+          repository: pangeo-forge/registrar
+          event-type: dispatch-tag-event
+          client-payload: '{"feedstock_spec": "${{ env.FEEDSTOCK_SPEC }}", "tag": "${{ env.TAG }}"}'
